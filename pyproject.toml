@@ -1,16 +1,22 @@
 [tool.poetry]
-name = "poetry-python-project"
+name = "Computational Content Analysis Work"
 version = "0.1.0"
-description = "This repository is a template for a python project using the poetry container. The intent is to do all the basic lifting for a python project so that people can hit the ground running with their ideas."
+description = "This repository is contains homework/classwork submissions for the Computational Content Analysis class at UChicago."
 authors = ["michplunkett"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-requests = "^2.28.2"
-pytest = "^7.3.1"
-responses = "^0.23.1"
 pre-commit = "^3.4.0"
+lucem-illud = {git = "https://github.com/UChicago-Computational-Content-Analysis/lucem_illud.git"}
+requests = "^2.31.0"
+pandas = "^2.1.4"
+python-docx = "^1.1.0"
+beautifulsoup4 = "^4.12.2"
+pdfminer = "^20191125"
+spacy = "^3.7.2"
+jupyter-black = "^0.3.4"
+jupyter = "^1.0.0"
 
 [build-system]
 requires = ["poetry-core"]
