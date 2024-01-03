@@ -7,4 +7,3 @@ lint:
 .PHONY: create-requirements
 create-requirements:
 	poetry export --without-hashes --format=requirements.txt > requirements.txt
-
