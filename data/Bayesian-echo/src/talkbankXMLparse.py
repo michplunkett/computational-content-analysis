@@ -49,9 +49,7 @@ class talkbankXML(object):
         print("%d participants" % (self._A))
         print("Reading messages...")
         if merge_consecutive_from_same_sender:
-            print(
-                "* will merge two consecutive messages from the same sender *"
-            )
+            print("* will merge two consecutive messages from the same sender *")
         # messages
         self._msg_number = 0
         self._all_word_count = {}
@@ -113,11 +111,7 @@ class talkbankXML(object):
                         end_time,
                     )
 
-            if (
-                len(msg) > 0
-                and (start_time is not None)
-                and (end_time is not None)
-            ):
+            if len(msg) > 0 and (start_time is not None) and (end_time is not None):
                 # add this message
                 self._msg_number += 1
                 # if self._msg_number == 100: break # break #
@@ -131,8 +125,7 @@ class talkbankXML(object):
                 # merge two consecutive utterance from the same sender
                 if (
                     len(self._all_messages_end_times_raw[sender]) > 0
-                    and start_time
-                    == self._all_messages_end_times_raw[sender][-1]
+                    and start_time == self._all_messages_end_times_raw[sender][-1]
                 ) or (
                     merge_consecutive_from_same_sender
                     and (last_sender is not None)
@@ -144,18 +137,14 @@ class talkbankXML(object):
                         self._all_messages_end_times_raw[sender][-1] = end_time
                 else:
                     self._all_messages_raw[sender].append(msg)
-                    self._all_messages_start_times_raw[sender].append(
-                        start_time
-                    )
+                    self._all_messages_start_times_raw[sender].append(start_time)
                     self._all_messages_end_times_raw[sender].append(end_time)
 
                 last_sender = sender
 
         # remove agents who do not speak
         A_new = 0
-        numbering_mapping = (
-            {}
-        )  # mapping: old agent numbering -> new agent numbering
+        numbering_mapping = {}  # mapping: old agent numbering -> new agent numbering
         inverse_numbering_mapping = (
             {}
         )  # mapping: new agent numbering -> old agent numbering
@@ -168,8 +157,7 @@ class talkbankXML(object):
                 print(
                     "Removed: agent",
                     x,
-                    "%d messages"
-                    % (len(self._all_messages_start_times_raw[x])),
+                    "%d messages" % (len(self._all_messages_start_times_raw[x])),
                 )
             else:
                 # a speaker
@@ -188,16 +176,14 @@ class talkbankXML(object):
             participant_list.append(
                 self._participant_list[inverse_numbering_mapping[x]]
             )
-            participants[
-                self._participant_list[inverse_numbering_mapping[x]]
-            ] = x
+            participants[self._participant_list[inverse_numbering_mapping[x]]] = x
         self._participant_list = participant_list
         self._participants = participants
         for x in self._all_messages_raw.keys():
             if x in numbering_mapping.keys():
-                all_messages_raw_updated[
-                    numbering_mapping[x]
-                ] = self._all_messages_raw[x][:]
+                all_messages_raw_updated[numbering_mapping[x]] = self._all_messages_raw[
+                    x
+                ][:]
                 all_messages_start_times_raw_updated[
                     numbering_mapping[x]
                 ] = self._all_messages_start_times_raw[x][:]
@@ -206,9 +192,7 @@ class talkbankXML(object):
                 ] = self._all_messages_end_times_raw[x][:]
 
         self._all_messages_raw = all_messages_raw_updated
-        self._all_messages_start_times_raw = (
-            all_messages_start_times_raw_updated
-        )
+        self._all_messages_start_times_raw = all_messages_start_times_raw_updated
         self._all_messages_end_times_raw = all_messages_end_times_raw_updated
 
         if remove_stop_words:
@@ -291,9 +275,7 @@ class talkbankXML(object):
                 break
         if display > 0:
             for token in self._vocab_list:
-                print(
-                    "%s: %d occurrences" % (token, self._all_word_count[token])
-                )
+                print("%s: %d occurrences" % (token, self._all_word_count[token]))
         listOfMSGLists = []
         listOfMSG_StartTimeLists = []
         listOfMSG_EndTimeLists = []
@@ -309,9 +291,7 @@ class talkbankXML(object):
             for i, msg in enumerate(self._all_messages_raw[x]):
                 start_time = self._all_messages_start_times_raw[x][i]
                 end_time = self._all_messages_end_times_raw[x][i]
-                assert (
-                    end_time > start_time
-                ), "Found start_time %s >= end_time %s!" % (
+                assert end_time > start_time, "Found start_time %s >= end_time %s!" % (
                     start_time,
                     end_time,
                 )
@@ -345,17 +325,11 @@ class talkbankXML(object):
                     print(msg)
                     print(
                         "start time",
-                        listOfMSG_StartTimeLists[x][i]
-                        * 1.0
-                        / maxActualTime
-                        * maxTime,
+                        listOfMSG_StartTimeLists[x][i] * 1.0 / maxActualTime * maxTime,
                     )
                     print(
                         "end time",
-                        listOfMSG_EndTimeLists[x][i]
-                        * 1.0
-                        / maxActualTime
-                        * maxTime,
+                        listOfMSG_EndTimeLists[x][i] * 1.0 / maxActualTime * maxTime,
                     )
 
         # convert to Message objects
@@ -363,12 +337,8 @@ class talkbankXML(object):
         for x in range(self._A):
             messageList = []
             for i, msg in enumerate(listOfMSGLists[x]):
-                start_time = (
-                    listOfMSG_StartTimeLists[x][i] / maxActualTime * maxTime
-                )
-                end_time = (
-                    listOfMSG_EndTimeLists[x][i] / maxActualTime * maxTime
-                )
+                start_time = listOfMSG_StartTimeLists[x][i] / maxActualTime * maxTime
+                end_time = listOfMSG_EndTimeLists[x][i] / maxActualTime * maxTime
 
                 messageList.append(
                     Message(
@@ -563,18 +533,12 @@ def plotAllMessages(allMessages):
         # bar plot
         ax = fig.add_subplot(A, 1, x + 1)
         agent_name = allMessages[x][0].get_sender_name()
-        start_times_vec = array(
-            [msg.get_start_time() for msg in allMessages[x]]
-        )
+        start_times_vec = array([msg.get_start_time() for msg in allMessages[x]])
         end_times_vec = array([msg.get_end_time() for msg in allMessages[x]])
         duration_vec = end_times_vec - start_times_vec
-        volume_vec = array(
-            [msg.get_total_token_counts() for msg in allMessages[x]]
-        )
+        volume_vec = array([msg.get_total_token_counts() for msg in allMessages[x]])
         ax.bar(start_times_vec, volume_vec, duration_vec, color="y")
-        ax.set_title(
-            "agent %s (%d utterances)" % (agent_name, len(allMessages[x]))
-        )
+        ax.set_title("agent %s (%d utterances)" % (agent_name, len(allMessages[x])))
         ax.set_xlim(0, T)
 
     plt.tight_layout(pad=1, h_pad=1, w_pad=1)
@@ -584,14 +548,10 @@ def plotAllMessages(allMessages):
         # width ~ total count of tokens
         ax = fig2.add_subplot(4, 3, x + 1)
         agent_name = allMessages[x][0].get_sender_name()
-        start_times_vec = array(
-            [msg.get_start_time() for msg in allMessages[x]]
-        )
+        start_times_vec = array([msg.get_start_time() for msg in allMessages[x]])
         end_times_vec = array([msg.get_end_time() for msg in allMessages[x]])
         duration_vec = end_times_vec - start_times_vec
-        volume_vec = array(
-            [msg.get_total_token_counts() for msg in allMessages[x]]
-        )
+        volume_vec = array([msg.get_total_token_counts() for msg in allMessages[x]])
         linear_fit = polyfit(volume_vec, duration_vec, 1)
         fitted_fun = poly1d(linear_fit)
 
@@ -624,8 +584,6 @@ if __name__ == "__main__":
 
     # print talkbankxml_instance.allWordCount()
 
-    allMessages = talkbankxml_instance.exportMessages(
-        V=20, maxTime=100.0, display=1
-    )
+    allMessages = talkbankxml_instance.exportMessages(V=20, maxTime=100.0, display=1)
 
     plotAllMessages(allMessages)

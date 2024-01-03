@@ -74,9 +74,7 @@ def main():
         merge_consecutive_from_same_sender=merge_consecutive_from_same_sender,
         language=language,
     )
-    messages_all = talkbankxml_instance.exportMessages(
-        V=V, maxTime=T, display=False
-    )
+    messages_all = talkbankxml_instance.exportMessages(V=V, maxTime=T, display=False)
     A = len(messages_all)
 
     # import data into bec
@@ -89,9 +87,7 @@ def main():
     ].get_start_time()
 
     bec.init_parameters(A=A, V=V)
-    bec.import_data(
-        V=V, A=A, messages=messages_all, time_to_split=time_to_split
-    )
+    bec.import_data(V=V, A=A, messages=messages_all, time_to_split=time_to_split)
 
     # all messages in bec's training set/test set
     allMessages_train_set = (

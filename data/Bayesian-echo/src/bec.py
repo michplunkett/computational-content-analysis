@@ -53,9 +53,7 @@ class BEC(object):
     def set_influence_upper_bound(self, influence_upper_bound):
         self._influence_upper_bound = influence_upper_bound
 
-    def set_word_concentration_upper_bound(
-        self, word_concentration_upper_bound
-    ):
+    def set_word_concentration_upper_bound(self, word_concentration_upper_bound):
         self._word_concentration_upper_bound = word_concentration_upper_bound
 
     def set_word_pseudocount_upper_bound(self, word_pseudocount_upper_bound):
@@ -78,14 +76,10 @@ class BEC(object):
             # A x A influence matrix, iid drawn from Gamma(_influence_prior)
             self._influence = gamma(*self._influence_prior, size=(A, A))
             # one scalar for each agent, iid drawn from Gamma(_word_concentration_prior)
-            self._word_concentration = gamma(
-                *self._word_concentration_prior, size=A
-            )
+            self._word_concentration = gamma(*self._word_concentration_prior, size=A)
             # A x V, with each row being the agents' word-freq profile
             # each row is a vector of length V, each element being a pseudocount iid drawn from Gamma(_word_pseudocount_prior)
-            self._word_pseudocounts = gamma(
-                *self._word_pseudocount_prior, size=(A, V)
-            )
+            self._word_pseudocounts = gamma(*self._word_pseudocount_prior, size=(A, V))
         else:
             self._time_decay = 5.0 * ones(A)
             self._influence = 2.0 * ones((A, A))
@@ -140,9 +134,7 @@ class BEC(object):
                     token_type_counts=None,
                 )
             )
-            self._messages[sender][
-                -1
-            ]._total_token_type_counts = message_lengths[i]
+            self._messages[sender][-1]._total_token_type_counts = message_lengths[i]
 
         # internal Data
         # self._messages[x] is the list of Messages sent from x
@@ -154,14 +146,10 @@ class BEC(object):
 
         # generator, first outside loop, then inside loop
         messages = (
-            message
-            for message_list in self._messages
-            for message in message_list
+            message for message_list in self._messages for message in message_list
         )
         # messages generated one by one in time order
-        for message in sorted(
-            messages, key=lambda message: message.get_start_time()
-        ):
+        for message in sorted(messages, key=lambda message: message.get_start_time()):
             # x is the sender
             x = message.get_sender()
             t = message.get_start_time()
@@ -245,9 +233,7 @@ class BEC(object):
             % (
                 self._time_to_split,
                 self._training_message_number,
-                self._training_message_number
-                * 100.0
-                / self._total_message_number,
+                self._training_message_number * 100.0 / self._total_message_number,
             )
         )
         print(
@@ -288,9 +274,7 @@ class BEC(object):
             if user in senders or user in recipients
             for m in message_list
         )
-        for message in sorted(
-            messages, key=lambda message: message.get_start_time()
-        ):
+        for message in sorted(messages, key=lambda message: message.get_start_time()):
             x = message.get_sender()
             t_start = message.get_start_time()
             t_end = message.get_end_time()
@@ -315,9 +299,7 @@ class BEC(object):
             # we can instead set the excited pseudocounts at start time to be an inflated version
             # = token type counts / decay from t_start to t_end
             for y in range(self._A):
-                excitation_pseudocounts[
-                    x, y, :
-                ] += message.count_token_types() * exp(
+                excitation_pseudocounts[x, y, :] += message.count_token_types() * exp(
                     (t_end - t_start) / self._time_decay[y]
                 )
 
@@ -328,9 +310,7 @@ class BEC(object):
         Data update: set self._time_decay[x] = time_decay
         it will call self.update_excitation_pseudocounts
         """
-        assert all(time_decay <= self._time_decay_upper_bound) and all(
-            time_decay > 0
-        )
+        assert all(time_decay <= self._time_decay_upper_bound) and all(time_decay > 0)
 
         if (self._time_decay[x, None] != time_decay).any():
             self._time_decay[x] = time_decay
@@ -344,9 +324,7 @@ class BEC(object):
         if the sender of that message is included in y
 
         """
-        assert all(influence >= 0) and all(
-            influence <= self._influence_upper_bound
-        )
+        assert all(influence >= 0) and all(influence <= self._influence_upper_bound)
         # diagonal
         if self._non_diagonal:
             if x is not None and y is not None:
@@ -428,15 +406,11 @@ class BEC(object):
                     *self._word_pseudocount_prior, size=(A, V)
                 )
                 if (
-                    all(
-                        self._word_pseudocounts
-                        <= self._word_pseudocount_upper_bound
-                    )
+                    all(self._word_pseudocounts <= self._word_pseudocount_upper_bound)
                     and all(self._influence <= self._influence_upper_bound)
                     and all(self._time_decay <= self._time_decay_upper_bound)
                     and all(
-                        self._word_concentration
-                        <= self._word_concentration_upper_bound
+                        self._word_concentration <= self._word_concentration_upper_bound
                     )
                 ):
                     break
@@ -664,8 +638,7 @@ class BEC(object):
 
         for x in range(self._A):
             grad[x, :] += sum(
-                message.log_prob_pseudocount_grad()
-                for message in self._messages[x]
+                message.log_prob_pseudocount_grad() for message in self._messages[x]
             )
 
         return grad
@@ -719,9 +692,7 @@ class Message(object):
 
     def generate(self, doc_length):
         self._token_prob = dirichlet(self._concentration * self.base_measure())
-        self._tokens = multinomial(1, self._token_prob, size=doc_length).argmax(
-            axis=-1
-        )
+        self._tokens = multinomial(1, self._token_prob, size=doc_length).argmax(axis=-1)
         self._token_type_counts = bincount(self._tokens, minlength=self._V)
         self.__ll_cached = False
 
@@ -768,9 +739,8 @@ class Message(object):
 
     def base_measure(self):
         if not self.__base_measure_cached:
-            self.__base_measure = (
-                self._pseudocounts.copy()
-                + self._influence.dot(self._excitation_pseudocounts)
+            self.__base_measure = self._pseudocounts.copy() + self._influence.dot(
+                self._excitation_pseudocounts
             )
             self.__base_measure /= self.__base_measure.sum()
             self.__base_measure_cached = True
@@ -807,9 +777,8 @@ class Message(object):
         return self.__ll
 
     def log_prob_pseudocount_grad(self):
-        unnormalized_base_measure = (
-            self._pseudocounts.copy()
-            + self._influence.dot(self._excitation_pseudocounts)
+        unnormalized_base_measure = self._pseudocounts.copy() + self._influence.dot(
+            self._excitation_pseudocounts
         )
         unnormalized_base_measure_sum = unnormalized_base_measure.sum()
         dirichlet_param = (

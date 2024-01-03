@@ -47,7 +47,7 @@ repos:
     rev: v0.0.286
     hooks:
       - id: ruff
-        types_or: [python, pyi, jupyter]
+        types_or: [python, pyi]
         exclude: data/
         args:
           - --fix
@@ -68,6 +68,7 @@ repos:
     rev: 23.7.0
     hooks:
       - id: black
+      - id: black-jupyter
         exclude: data/
         args:
           - --safe

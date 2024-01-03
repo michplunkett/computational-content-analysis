@@ -34,10 +34,7 @@ def sample_bec(
     # sample
     for i in range(0, sample_number + burn_in_number):
         if display > 0 and i % display == 0:
-            print(
-                "sampling %d out of %d"
-                % (i + 1, sample_number + burn_in_number)
-            )
+            print("sampling %d out of %d" % (i + 1, sample_number + burn_in_number))
 
         if display == 1:
             print("Sampling time decay...")
@@ -69,9 +66,7 @@ def sample_bec(
     outputfilename_influence = resultDirName + "SAMPLE-influence.txt"
     outputfilename_time_decay = resultDirName + "SAMPLE-time_decay.txt"
     outputfilename_pseudocounts = resultDirName + "SAMPLE-pseudocounts.txt"
-    outputfilename_word_concentration = (
-        resultDirName + "SAMPLE-word_concentration.txt"
-    )
+    outputfilename_word_concentration = resultDirName + "SAMPLE-word_concentration.txt"
     outputfilename_logprior_and_loglikelihood = (
         resultDirName + "SAMPLE-log_prior_and_log_likelihood.txt"
     )
@@ -84,9 +79,7 @@ def sample_bec(
         comments="",
     )
     # time decay
-    timeDecayHeader = "".join(
-        ["time.decay.%d\t" % (i) for i in range(1, A + 1)]
-    )
+    timeDecayHeader = "".join(["time.decay.%d\t" % (i) for i in range(1, A + 1)])
     savetxt(
         outputfilename_time_decay,
         time_decays,

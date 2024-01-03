@@ -41,20 +41,13 @@ def log_polya(N, A):
 
 def non_log_dirichlet(dist, hyper):
     assert len(dist) == len(hyper)
-    return (gamma(np.sum(hyper)) * np.prod(dist ** (hyper - 1))) / np.prod(
-        gamma(hyper)
-    )
+    return (gamma(np.sum(hyper)) * np.prod(dist ** (hyper - 1))) / np.prod(gamma(hyper))
 
 
 def log_gamma(x, shape, scale):
     x = np.asarray(x)
     assert (x > 0).all and shape > 0 and scale > 0
-    return (
-        -shape * np.log(scale)
-        - gammaln(shape)
-        + (shape - 1) * np.log(x)
-        - x / scale
-    )
+    return -shape * np.log(scale) - gammaln(shape) + (shape - 1) * np.log(x) - x / scale
 
 
 def log_gamma_poisson(N, shape, rate):
@@ -63,9 +56,7 @@ def log_gamma_poisson(N, shape, rate):
     shape, rate: Parameters of the gamma distribution
 
     """
-    sum_N_plus_shape = (
-        N + shape
-    ).sum()  # this is computation is performed twice
+    sum_N_plus_shape = (N + shape).sum()  # this is computation is performed twice
     return (
         gammaln(sum_N_plus_shape)
         - gammaln(rate)

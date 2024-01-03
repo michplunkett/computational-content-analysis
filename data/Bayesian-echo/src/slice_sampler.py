@@ -62,11 +62,7 @@ def slice_sample(
         L_step_out_limit = floor(np.random.rand() * step_out_limit)
         R_step_out_limit = step_out_limit - L_step_out_limit
 
-    while (
-        L_step_out_limit > 0
-        and (L_bound is None or L_bound < L)
-        and ll_func(L) > z
-    ):
+    while L_step_out_limit > 0 and (L_bound is None or L_bound < L) and ll_func(L) > z:
         L -= window_size
         if L_bound is not None:
             L = max(L_bound, L)
@@ -74,11 +70,7 @@ def slice_sample(
         # print "  L=", L, "L_bound=", L_bound
         L_step_out_limit -= 1
 
-    while (
-        R_step_out_limit > 0
-        and (R_bound is None or R < R_bound)
-        and ll_func(R) > z
-    ):
+    while R_step_out_limit > 0 and (R_bound is None or R < R_bound) and ll_func(R) > z:
         R += window_size
         if R_bound is not None:
             R = min(R_bound, R)
@@ -202,9 +194,7 @@ def shrinking_rank_slice_sample(
 
     while True:
         crumb = projection(
-            np.random.multivariate_normal(
-                x_init, crumb_covariance * np.identity(p)
-            )
+            np.random.multivariate_normal(x_init, crumb_covariance * np.identity(p))
         )
 
         inverse_sample_covariance += 1.0 / crumb_covariance

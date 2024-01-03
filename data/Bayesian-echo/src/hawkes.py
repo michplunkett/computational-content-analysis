@@ -274,9 +274,7 @@ class Hawkes(object):
         for x in range(self._A):
             # the times should be sorted
             # no duplicates !!! (very important, otherwise process messed up)
-            assert all(
-                data[x][i] < data[x][i + 1] for i in range((len(data[x]) - 1))
-            )
+            assert all(data[x][i] < data[x][i + 1] for i in range((len(data[x]) - 1)))
 
         self._data = data[:]
         for x in range(self._A):
@@ -323,19 +321,13 @@ class Hawkes(object):
                 tmp_event_from = []
                 for y in range(self._A):
                     for t in self._data[y]:
-                        if (
-                            k == 0 or self._data[x][k - 1] <= t
-                        ) and t < currentTime:
+                        if (k == 0 or self._data[x][k - 1] <= t) and t < currentTime:
                             tmp_elapsed_times.append(currentTime - t)
                             tmp_event_from.append(y)
 
                 # should be only ONE empty array -- corresponding the first event of all events of all x
-                self._newly_added_elapsed_time[x].append(
-                    array(tmp_elapsed_times)
-                )
-                self._newly_added_event_from[x].append(
-                    array(tmp_event_from, dtype=int)
-                )
+                self._newly_added_elapsed_time[x].append(array(tmp_elapsed_times))
+                self._newly_added_event_from[x].append(array(tmp_event_from, dtype=int))
 
         print("Data cache updated.")
 
@@ -371,9 +363,7 @@ class Hawkes(object):
             else:
                 times_before = array([s for s in self._data[q] if s < t])
             if len(times_before) > 0:
-                r += self._nu[q, x] * sum(
-                    exp(-(t - times_before) / self._tau[x])
-                )
+                r += self._nu[q, x] * sum(exp(-(t - times_before) / self._tau[x]))
 
         return r
 
@@ -429,17 +419,13 @@ class Hawkes(object):
             for x in range(self._A):
                 ## ll for each agent
                 integrated_rate_T = self.integratedRate(x, self._T)
-                integrated_rate_split_time = self.integratedRate(
-                    x, self._time_to_split
-                )
+                integrated_rate_split_time = self.integratedRate(x, self._time_to_split)
                 ll -= integrated_rate_split_time
                 ll_test -= integrated_rate_T - integrated_rate_split_time
                 rate_sum_x = 0
                 log_rate_sum_x = 0
                 log_rate_sum_x_test = 0
-                assert len(self._newly_added_event_from[x]) == len(
-                    self._data[x]
-                )
+                assert len(self._newly_added_event_from[x]) == len(self._data[x])
                 train_set_size = 0
                 test_set_size = 0
                 # both the test set and the train set share the SAME rate function
@@ -458,23 +444,16 @@ class Hawkes(object):
                         ]
                         rate_sum_x += sum(
                             corresponding_nu
-                            * exp(
-                                -self._newly_added_elapsed_time[x][k]
-                                / self._tau[x]
-                            )
+                            * exp(-self._newly_added_elapsed_time[x][k] / self._tau[x])
                         )
                     # remember to add the non-decaying baseline rate
                     if currentTime <= self._time_to_split:
                         ## train set
-                        log_rate_sum_x += log(
-                            rate_sum_x + self._baseline_rate[x]
-                        )
+                        log_rate_sum_x += log(rate_sum_x + self._baseline_rate[x])
                         train_set_size += 1
                     else:
                         ## test set
-                        log_rate_sum_x_test += log(
-                            rate_sum_x + self._baseline_rate[x]
-                        )
+                        log_rate_sum_x_test += log(rate_sum_x + self._baseline_rate[x])
                         test_set_size += 1
                 # now add the ll for this dim
                 ll += log_rate_sum_x
@@ -505,24 +484,16 @@ class Hawkes(object):
         """
         print("Randomizing parameters to satisfy the matrix norm constraint...")
         while True:
-            nu_randomized = np.random.gamma(
-                shape=1, scale=2, size=(self._A, self._A)
-            )
+            nu_randomized = np.random.gamma(shape=1, scale=2, size=(self._A, self._A))
             if self._non_diagonal:
                 for x in range(self._A):
                     nu_randomized[x, x] = 0
             self.set_nu(nu_randomized)
-            self.set_baseline_rate(
-                np.random.gamma(shape=1, scale=0.2, size=(self._A))
-            )
+            self.set_baseline_rate(np.random.gamma(shape=1, scale=0.2, size=(self._A)))
             if self._hyperparams_tau is not None:
-                self.set_tau(
-                    np.random.gamma(*self._hyperparams_tau, size=(self._A))
-                )
+                self.set_tau(np.random.gamma(*self._hyperparams_tau, size=(self._A)))
             else:
-                self.set_tau(
-                    np.random.gamma(shape=1, scale=1.5, size=(self._A))
-                )
+                self.set_tau(np.random.gamma(shape=1, scale=1.5, size=(self._A)))
 
             if self.test_matrix_norm_constraint():
                 break
@@ -636,9 +607,7 @@ class Hawkes(object):
         self._tau_window_size = amax(tau)
         self._nu_window_size = amax(nu)
         if verbose > 0:
-            print(
-                "Setting the window size of the slice sampler to be the maximum"
-            )
+            print("Setting the window size of the slice sampler to be the maximum")
             print(
                 "baseline",
                 self._baseline_rate_window_size,
@@ -752,9 +721,7 @@ class Hawkes(object):
             upper_bound_tau = 1.0 / sum(self._nu[:, x])
 
             # TODO: remove the assert
-            assert (
-                self._tau[x] <= upper_bound_tau
-            ), "tau = %f, upper_bound_tau = %f" % (
+            assert self._tau[x] <= upper_bound_tau, "tau = %f, upper_bound_tau = %f" % (
                 self._tau[x],
                 upper_bound_tau,
             )
@@ -840,9 +807,7 @@ class Hawkes(object):
             ax.set_title("agent %d" % (x + 1))
 
             ax2 = fig.add_subplot(a, 2, 2 * j + 2)
-            integrated_rate_vec = array(
-                [self.integratedRate(x, t) for t in t_vec]
-            )
+            integrated_rate_vec = array([self.integratedRate(x, t) for t in t_vec])
             event_count_vec = array([self.eventCount(x, t) for t in t_vec])
             ax2.plot(t_vec, event_count_vec, color="r", ls="--")
             ax2.plot(t_vec, integrated_rate_vec, color="b")
@@ -890,9 +855,7 @@ class Hawkes(object):
         rate_mle = self.mle_homogenous_poisson()
 
         for x in range(self._A):
-            this_process = array(
-                [self.integratedRate(x, t) for t in self._data[x]]
-            )
+            this_process = array([self.integratedRate(x, t) for t in self._data[x]])
             residual_processes.append(this_process)
 
         # testing by exponential interval
@@ -916,9 +879,7 @@ class Hawkes(object):
             probplot(residuals, dist="expon", plot=plt, fit=False)
             xvec = linspace(0, max(residuals) * 1.1, num=100)
             ax2.plot(xvec, xvec, color="g", ls="--")
-            ax2.set_title(
-                "agent %d under homogenous (Poisson) fitting" % (x + 1)
-            )
+            ax2.set_title("agent %d under homogenous (Poisson) fitting" % (x + 1))
             xmin, xmax = ax2.get_xlim()
             ax2.set_xlim(0, xmax)
             ax2.set_ylim(0, xmax)
@@ -952,9 +913,7 @@ class Hawkes(object):
         pred = 0
         for x in range(self._A):
             N_T = len(self._data[x])
-            N_train = len(
-                [t for t in self._data[x] if t <= self._time_to_split]
-            )
+            N_train = len([t for t in self._data[x] if t <= self._time_to_split])
             N_test = N_T - N_train
             pred += (
                 -log(delta_t)
@@ -976,9 +935,7 @@ class Hawkes(object):
 
         pred = 0
         for x in range(self._A):
-            N_train = len(
-                [t for t in self._data[x] if t <= self._time_to_split]
-            )
+            N_train = len([t for t in self._data[x] if t <= self._time_to_split])
             pred += (
                 -log(self._time_to_split)
                 + gammaln(2 * N_train + alpha)
@@ -1000,9 +957,7 @@ class Hawkes(object):
         pred = 0
         for x in range(self._A):
             N_T = len(self._data[x])
-            N_train = len(
-                [t for t in self._data[x] if t <= self._time_to_split]
-            )
+            N_train = len([t for t in self._data[x] if t <= self._time_to_split])
             N_test = N_T - N_train
             pred += N_test * log(rate_mle[x]) - rate_mle[x] * delta_t
 
@@ -1016,9 +971,7 @@ class Hawkes(object):
 
         ll = 0
         for x in range(self._A):
-            N_train = len(
-                [t for t in self._data[x] if t <= self._time_to_split]
-            )
+            N_train = len([t for t in self._data[x] if t <= self._time_to_split])
             ll += N_train * log(rate_mle[x]) - rate_mle[x] * self._time_to_split
 
         return ll
@@ -1065,9 +1018,7 @@ def unitest_simulation():
     hawkes_proc.randomize_parameters()
     MLE_baseline_rate, MLE_tau, MLE_nu = hawkes_proc.optimize_parameters()
     print("\n* MLE")
-    print(
-        "baseline rate: ", "True =", baseline_rate, "\nMLE =", MLE_baseline_rate
-    )
+    print("baseline rate: ", "True =", baseline_rate, "\nMLE =", MLE_baseline_rate)
     print("time decay: ", "True =", time_decay, "\nMLE =", MLE_tau)
     print("influence matrix: ", "True =", nu, "\nMLE =", MLE_nu)
     print(
@@ -1094,9 +1045,7 @@ def unitest_simulation():
         if k >= B:
             nu_samples[k - B, ...] = hawkes_proc.sample_nu()
             tau_samples[k - B, ...] = hawkes_proc.sample_tau()
-            baseline_rate_samples[
-                k - B, ...
-            ] = hawkes_proc.sample_baseline_rate()
+            baseline_rate_samples[k - B, ...] = hawkes_proc.sample_baseline_rate()
             ll_samples[k - B] = hawkes_proc.log_likelihood()
             ll_test_samples[k - B] = hawkes_proc.log_likelihood_test_set()
 
