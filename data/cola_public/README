@@ -24,7 +24,7 @@ Download the dataset at: http://nyu-mll.github.io/cola
 3. Citation
 
 @misc{warstadt-18,
-Author = {Warstadt, Alexander and Singh, Amanpreet 
+Author = {Warstadt, Alexander and Singh, Amanpreet
 and Bowman, Samuel R},
 Howpublished = {http://nyu-mll.github.io/cola},
 Title = {Corpus of Linguistic Acceptability},
@@ -74,7 +74,7 @@ The sentences were gathered from 23 sources, with full citations given below. Th
 
 6. Sources
 
-In domain: 
+In domain:
 (Source, Code, N)
 Adger (2003), ad-03, 948
 Baltin (1982), b_82, 96
@@ -94,7 +94,7 @@ Ross (1967), r-67, 1029
 Sag et al. (1985), sgww85, 153
 Sportiche et al. (2013), sks13, 651
 
-Out of domain: 
+Out of domain:
 (Source, Code, N)
 Chung et al. (1995), clc95, 148
 Collins (2005), c-05, 66
