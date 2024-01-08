@@ -17,6 +17,9 @@ pdfminer = "^20191125"
 spacy = "^3.7.2"
 jupyter-black = "^0.3.4"
 jupyter = "^1.0.0"
+graphviz = "^0.20.1"
+seaborn = "^0.13.1"
+wordcloud = "^1.9.3"
 
 [build-system]
 requires = ["poetry-core"]
