@@ -11,4 +11,6 @@ This repository is used for homework submissions and class work for the Computat
   - Example: `poetry add black`
 
 ## Standard Commands
-- `make lint`: Runs `pre-commit`
+- `make`: Serially runs the `create-requirements` and `lint` functions.
+- `make lint`: Runs `pre-commit`.
+- `make create-requirements`: Creates a `requirements.txt` file based off of `pyproject.toml`.
