@@ -34,6 +34,10 @@ repos:
   - repo: https://github.com/nbQA-dev/nbQA
     rev: 1.7.1
     hooks:
+      - id: nbqa-ruff
+        exclude: data/
+        args:
+          - --fix
       - id: nbqa-black
         exclude: data/
       - id: nbqa-isort
