@@ -31,6 +31,14 @@ repos:
       - id: python-no-eval
       - id: python-no-log-warn
 
+  - repo: https://github.com/nbQA-dev/nbQA
+    rev: 1.7.1
+    hooks:
+      - id: nbqa-black
+        exclude: data/
+      - id: nbqa-isort
+        exclude: data/
+
   - repo: https://github.com/PyCQA/isort
     rev: 5.12.0
     hooks:
@@ -68,9 +76,3 @@ repos:
     rev: 23.7.0
     hooks:
       - id: black
-      - id: black-jupyter
-        exclude: data/
-        args:
-          - --safe
-          - --target-version=py311
-          - --line-length=80
