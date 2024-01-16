@@ -2,7 +2,7 @@
 .idea
 .vscode
 **/.DS_Store
-./data/Movies/*
+/data/Movies/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
