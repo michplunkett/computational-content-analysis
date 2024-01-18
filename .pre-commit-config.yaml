@@ -34,14 +34,16 @@ repos:
   - repo: https://github.com/nbQA-dev/nbQA
     rev: 1.7.1
     hooks:
-#      - id: nbqa-ruff
-#        exclude: data/
-#        args:
-#          - --fix
-#      - id: nbqa-isort
-#        exclude: data/
+      - id: nbqa-ruff
+        exclude: data/
+        args:
+          - --fix
+          - --ignore=E721,E722
       - id: nbqa-black
         exclude: data/
+      - id: nbqa-isort
+        exclude: data/
+
 
   - repo: https://github.com/PyCQA/isort
     rev: 5.12.0
