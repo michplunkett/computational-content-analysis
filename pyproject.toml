@@ -38,6 +38,8 @@ frugalgpt = {git = "https://github.com/stanford-futuredata/FrugalGPT.git", rev =
 langchain = "0.0.205"
 python-dotenv = "^1.0.1"
 statsmodels = "^0.14.1"
+convokit = "^3.0.0"
+sentence-transformers = "^2.4.0"
 
 [build-system]
 requires = ["poetry-core"]
